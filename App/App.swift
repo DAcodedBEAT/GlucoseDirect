@@ -13,7 +13,7 @@ import SwiftUI
 // MARK: - GlucoseDirectApp
 
 @main
-final class GlucoseDirectApp: App {
+struct GlucoseDirectApp: App {
     // MARK: Lifecycle
 
     init() {
@@ -29,14 +29,14 @@ final class GlucoseDirectApp: App {
     @UIApplicationDelegateAdaptor(GlucoseDirectAppDelegate.self) var appDelegate {
         didSet {
             oldValue.store = nil
-            appDelegate.store = store
+            appDelegate.store = GlucoseDirectApp.store
         }
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(store)
+                .environmentObject(self.store)
         }
     }
 
@@ -127,7 +127,7 @@ private func createSimulatorAppStore() -> DirectStore {
         glucoseNotificationMiddelware(),
         connectionNotificationMiddelware(),
         appleCalendarExportMiddleware(),
-        appleHealthExportMiddleware(),
+        appleHealthSyncMiddleware(),
         readAloudMiddelware(),
         bellmanAlarmMiddelware(),
         nightscoutMiddleware(),
@@ -167,7 +167,7 @@ private func createAppStore() -> DirectStore {
         glucoseNotificationMiddelware(),
         connectionNotificationMiddelware(),
         appleCalendarExportMiddleware(),
-        appleHealthExportMiddleware(),
+        appleHealthSyncMiddleware(),
         readAloudMiddelware(),
         bellmanAlarmMiddelware(),
         nightscoutMiddleware(),

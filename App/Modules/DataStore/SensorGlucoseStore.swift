@@ -54,6 +54,8 @@ func sensorGlucoseStoreMiddleware() -> Middleware<DirectState, DirectAction> {
         switch action {
         case .startup:
             DataStore.shared.createSensorGlucoseTable()
+            DataStore.shared.addExternalSensorGlucoseColumns()
+            DataStore.shared.addSensorInfoSensorGlucoseColumns()
 
             return DataStore.shared.getFirstSensorGlucoseDate().map { minSelectedDate in
                 DirectAction.setMinSelectedDate(minSelectedDate: minSelectedDate)
@@ -166,6 +168,68 @@ private extension DataStore {
 
             do {
                 try migrator.migrate(dbQueue)
+            } catch {
+                DirectLog.error("\(error)")
+            }
+        }
+    }
+    
+    func addExternalSensorGlucoseColumns() {
+        if let dbQueue = dbQueue {
+            do {
+                var hasAppleHealthId = false;
+                try dbQueue.read { db in
+                    let columns = try db.columns(in: SensorGlucose.Table)
+                    columns.forEach { column in
+                        if column.name == SensorGlucose.Columns.appleHealthId.name {
+                            hasAppleHealthId = true;
+                        }
+                    }
+                }
+
+                try dbQueue.write { db in
+                    if !hasAppleHealthId {
+                        try db.alter(table: SensorGlucose.Table) { t in
+                            t.add(column: SensorGlucose.Columns.appleHealthId.name, .text)
+                                .indexed()
+                        }
+                    }
+                }
+            } catch {
+                DirectLog.error("\(error)")
+            }
+        }
+    }
+    
+    func addSensorInfoSensorGlucoseColumns() {
+        if let dbQueue = dbQueue {
+            do {
+                var hasSensorSerial = false;
+                var hasSensorManufacturer = false;
+                try dbQueue.read { db in
+                    let columns = try db.columns(in: SensorGlucose.Table)
+                    columns.forEach { column in
+                        switch column.name {
+                        case SensorGlucose.Columns.serial.name:
+                            hasSensorSerial = true;
+                        case SensorGlucose.Columns.manufacturer.name:
+                            hasSensorManufacturer = true;
+                        default:
+                            break;
+                        }
+                    }
+                }
+
+                try dbQueue.write { db in
+                    try db.alter(table: SensorGlucose.Table) { t in
+                        if !hasSensorSerial {
+                            t.add(column: SensorGlucose.Columns.serial.name, .text)
+                        }
+                        if !hasSensorManufacturer {
+                            t.add(column: SensorGlucose.Columns.manufacturer.name, .text)
+                        }
+                    }
+                }
             } catch {
                 DirectLog.error("\(error)")
             }

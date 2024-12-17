@@ -12,6 +12,7 @@ func insulinDeliveryStoreMiddleware() -> Middleware<DirectState, DirectAction> {
         switch action {
         case .startup:
             DataStore.shared.createInsulinDeliveryTable()
+            DataStore.shared.addExternalInsulinDeliveryColumns()
 
             return DataStore.shared.getFirstInsulinDeliveryDate().map { minSelectedDate in
                 DirectAction.setMinSelectedDate(minSelectedDate: minSelectedDate)
@@ -95,6 +96,52 @@ private extension DataStore {
                         t.column(InsulinDelivery.Columns.timegroup.name, .date)
                             .notNull()
                             .indexed()
+                    }
+                }
+            } catch {
+                DirectLog.error("\(error)")
+            }
+        }
+    }
+    
+    func addExternalInsulinDeliveryColumns() {
+        if let dbQueue = dbQueue {
+            do {
+                var hasOriginatingSourceName = false;
+                var hasOriginatingSourceBundle = false;
+                var hasAppleHealthId = false;
+                try dbQueue.read { db in
+                    let columns = try db.columns(in: InsulinDelivery.Table)
+                    columns.forEach { column in
+                        switch column.name {
+                        case InsulinDelivery.Columns.originatingSourceName.name:
+                            hasOriginatingSourceName = true;
+                        case InsulinDelivery.Columns.originatingSourceBundle.name:
+                            hasOriginatingSourceBundle = true;
+                        case InsulinDelivery.Columns.appleHealthId.name:
+                            hasAppleHealthId = true;
+                        default:
+                            break;
+                        }
+                    }
+                }
+
+                try dbQueue.write { db in
+                    try db.alter(table: InsulinDelivery.Table) { t in
+                        if !hasOriginatingSourceName {
+                            t.add(column: InsulinDelivery.Columns.originatingSourceName.name, .text)
+                                .indexed()
+                                .defaults(to: DirectConfig.projectName)
+                        }
+                        if !hasOriginatingSourceBundle {
+                            t.add(column: InsulinDelivery.Columns.originatingSourceBundle.name, .text)
+                                .indexed()
+                                .defaults(to: DirectConfig.appBundle)
+                        }
+                        if !hasAppleHealthId {
+                            t.add(column: InsulinDelivery.Columns.appleHealthId.name, .text)
+                                .indexed()
+                        }
                     }
                 }
             } catch {

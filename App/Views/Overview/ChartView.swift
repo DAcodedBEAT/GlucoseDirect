@@ -8,7 +8,7 @@ import SwiftUI
 
 // MARK: - ChartView
 
-@available(iOS 16.0, *)
+@available(iOS 16, *)
 struct ChartView: View {
     // MARK: Internal
 
@@ -428,6 +428,22 @@ struct ChartView: View {
 
     // MARK: Private
 
+    func isSleepTime() -> Bool {
+        if enableSleepMode {
+            let now = Date().timeIntervalSince(Date().startOfDay)
+            let begin = store.state.beginSleepTime.timeIntervalSince(store.state.beginSleepTime.startOfDay)
+            let end = store.state.endSleepTime.timeIntervalSince(store.state.endSleepTime.startOfDay)
+
+            if begin < end {
+                return begin <= now && now <= end
+            } else {
+                return begin <= now || now <= end
+            }
+        } else {
+            return false
+        }
+    }
+
     private enum Config {
         static let chartID = "chart"
         static let cornerRadius: CGFloat = 20
@@ -468,7 +484,7 @@ struct ChartView: View {
     @State private var selectedRawSensorPoint: GlucoseDatapoint? = nil
     @State private var selectedBloodPoint: GlucoseDatapoint? = nil
 
-    private let calculationQueue = DispatchQueue(label: "libre-direct.chart-calculation", qos: .utility)
+    private let calculationQueue = DispatchQueue(label: "glucose-direct.chart-calculation", qos: .utility)
 
     private var screenHeight: CGFloat {
         UIScreen.screenHeight
@@ -510,12 +526,24 @@ struct ChartView: View {
         return 300
     }
 
+    private var enableSleepMode: Bool {
+        return store.state.enableSleepMode
+    }
+
     private var alarmLow: Double {
-        convertToRequired(mgdLValue: store.state.alarmLow)
+        if isSleepTime() {
+            convertToRequired(mgdLValue: store.state.alarmLowSleep)
+        } else {
+            convertToRequired(mgdLValue: store.state.alarmLow)
+        }
     }
 
     private var alarmHigh: Double {
-        convertToRequired(mgdLValue: store.state.alarmHigh)
+        if isSleepTime() {
+            convertToRequired(mgdLValue: store.state.alarmHighSleep)
+        } else {
+            convertToRequired(mgdLValue: store.state.alarmHigh)
+        }
     }
 
     private var startMarker: Date? {

@@ -52,19 +52,19 @@ func dataStoreMigrationMiddleware() -> Middleware<DirectState, DirectAction> {
 extension UserDefaults {
     var gen1GlucoseValues: [Gen1Glucose] {
         get {
-            return getArray(forKey: "libre-direct.settings.glucose-value-array") ?? []
+            return getArray(forKey: "glucose-direct.settings.glucose-value-array") ?? []
         }
         set {
-            setArray(newValue, forKey: "libre-direct.settings.glucose-value-array")
+            setArray(newValue, forKey: "glucose-direct.settings.glucose-value-array")
         }
     }
 
     var gen2GlucoseValues: [Gen2Glucose] {
         get {
-            return getArray(forKey: "libre-direct.settings.glucose-values") ?? []
+            return getArray(forKey: "glucose-direct.settings.glucose-values") ?? []
         }
         set {
-            setArray(newValue, forKey: "libre-direct.settings.glucose-values")
+            setArray(newValue, forKey: "glucose-direct.settings.glucose-values")
         }
     }
 }
@@ -111,7 +111,7 @@ extension Array where Element == Gen1Glucose {
     func toBloodGlucose() -> [BloodGlucose] {
         return map { value in
             if let initialGlucoseValue = value.initialGlucoseValue, value.type == .bgm {
-                return BloodGlucose(id: value.id, timestamp: value.timestamp, glucoseValue: initialGlucoseValue)
+                return BloodGlucose(id: value.id, timestamp: value.timestamp, glucoseValue: initialGlucoseValue, originatingSourceName: DirectConfig.projectName, originatingSourceBundle: DirectConfig.appBundle)
             }
 
             return nil
@@ -175,7 +175,7 @@ extension Array where Element == Gen2Glucose {
     func toBloodGlucose() -> [BloodGlucose] {
         return map { value in
             if let rawGlucoseValue = value.rawGlucoseValue, value.type == .bgm {
-                return BloodGlucose(id: value.id, timestamp: value.timestamp, glucoseValue: rawGlucoseValue)
+                return BloodGlucose(id: value.id, timestamp: value.timestamp, glucoseValue: rawGlucoseValue, originatingSourceName: DirectConfig.projectName, originatingSourceBundle: DirectConfig.appBundle)
             }
 
             return nil

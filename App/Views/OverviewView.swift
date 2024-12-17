@@ -14,7 +14,7 @@ struct OverviewView: View {
                 .listRowSeparator(.hidden)
 
             if !store.state.sensorGlucoseValues.isEmpty || !store.state.bloodGlucoseValues.isEmpty {
-                if #available(iOS 16.0, *) {
+                if #available(iOS 16, *) {
                     ChartView()
                 } else {
                     ChartViewCompatibility()

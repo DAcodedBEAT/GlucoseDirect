@@ -15,11 +15,15 @@ protocol DirectState {
     var appState: ScenePhase { get set }
     var alarmHigh: Int { get set }
     var alarmLow: Int { get set }
+    var alarmHighSleep: Int { get set }
+    var alarmLowSleep: Int { get set }
+    var beginSleepTime: Date { get set }
+    var endSleepTime: Date { get set }
     var alarmSnoozeUntil: Date? { get set }
     var alarmSnoozeKind: Alarm? { get set }
     var alarmVolume: Float { get set }
     var appleCalendarExport: Bool { get set }
-    var appleHealthExport: Bool { get set }
+    var appleHealthSync: Bool { get set }
     var bellmanAlarm: Bool { get set }
     var bellmanConnectionState: BellmanConnectionState { get set }
     var bloodGlucoseValues: [BloodGlucose] { get set }
@@ -35,7 +39,9 @@ protocol DirectState {
     var expiringAlarmSound: NotificationSound { get set }
     var normalGlucoseNotification: Bool { get set }
     var alarmGlucoseNotification: Bool { get set }
+    var enableSleepMode: Bool { get set }
     var glucoseLiveActivity: Bool { get set }
+    var notifyAlarms: Bool { get set }
     var glucoseUnit: GlucoseUnit { get set }
     var highGlucoseAlarmSound: NotificationSound { get set }
     var ignoreMute: Bool { get set }
@@ -132,12 +138,35 @@ extension DirectState {
         Date().addingTimeInterval(-DirectConfig.smoothThresholdSeconds)
     }
 
-    func isAlarm(glucoseValue: Int) -> Alarm {
-        if glucoseValue < alarmLow {
-            return .lowAlarm
+    func isSleepTime() -> Bool {
+        if enableSleepMode {
+            let now = Date().timeIntervalSince(Date().startOfDay)
+            let begin = beginSleepTime.timeIntervalSince(beginSleepTime.startOfDay)
+            let end = endSleepTime.timeIntervalSince(endSleepTime.startOfDay)
 
-        } else if glucoseValue > alarmHigh {
-            return .highAlarm
+            if begin < end {
+                return begin <= now && now <= end
+            } else {
+                return begin <= now || now <= end
+            }
+        } else {
+            return false
+        }
+    }
+
+    func isAlarm(glucoseValue: Int) -> Alarm {
+        if isSleepTime() {
+            if glucoseValue < alarmLowSleep {
+                return .lowAlarm
+            } else if glucoseValue > alarmHighSleep {
+                return .highAlarm
+            }
+        } else {
+            if glucoseValue < alarmLow {
+                return .lowAlarm
+            } else if glucoseValue > alarmHigh {
+                return .highAlarm
+            }
         }
 
         return .none

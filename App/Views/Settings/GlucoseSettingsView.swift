@@ -28,6 +28,34 @@ struct GlucoseSettingsView: View {
                     store.dispatch(.setAlarmHigh(upperLimit: value))
                 }
 
+                Toggle("Sleep mode", isOn: enableSleepMode).toggleStyle(SwitchToggleStyle(tint: Color.ui.accent))
+
+                if enableSleepMode.wrappedValue {
+                    DatePicker("Bed time",
+                               selection: beginSleepTime,
+                               displayedComponents: .hourAndMinute
+                    )
+                    .onAppear {
+                        UIDatePicker.appearance().minuteInterval = 15
+                    }
+
+                    DatePicker("Wake up time",
+                               selection: endSleepTime,
+                               displayedComponents: .hourAndMinute
+                    )
+                    .onAppear {
+                        UIDatePicker.appearance().minuteInterval = 15
+                    }
+
+                    NumberSelectorView(key: LocalizedString("Lower limit"), value: store.state.alarmLowSleep, step: 5, max: store.state.alarmHighSleep, displayValue: store.state.alarmLowSleep.asGlucose(glucoseUnit: store.state.glucoseUnit, withUnit: true)) { value in
+                        store.dispatch(.setAlarmLowSleep(lowerLimit: value))
+                    }
+
+                    NumberSelectorView(key: LocalizedString("Upper limit"), value: store.state.alarmHighSleep, step: 5, min: store.state.alarmLowSleep, displayValue: store.state.alarmHighSleep.asGlucose(glucoseUnit: store.state.glucoseUnit, withUnit: true)) { value in
+                        store.dispatch(.setAlarmHighSleep(upperLimit: value))
+                    }
+                }
+
                 Toggle("Normal glucose notification", isOn: normalGlucoseNotification).toggleStyle(SwitchToggleStyle(tint: Color.ui.accent))
                 Toggle("Alarm glucose notification", isOn: alarmGlucoseNotification).toggleStyle(SwitchToggleStyle(tint: Color.ui.accent))
 
@@ -36,6 +64,7 @@ struct GlucoseSettingsView: View {
                 }
                 
                 Toggle("Glucose read aloud", isOn: readGlucose).toggleStyle(SwitchToggleStyle(tint: Color.ui.accent))
+                Toggle("Notify alarms", isOn: notifyAlarms).toggleStyle(SwitchToggleStyle(tint: Color.ui.accent))
             },
             header: {
                 Label("Glucose settings", systemImage: "cross.case")
@@ -45,10 +74,31 @@ struct GlucoseSettingsView: View {
 
     // MARK: Private
 
+    private var beginSleepTime: Binding<Date> {
+        Binding(
+            get: { store.state.beginSleepTime },
+            set: { store.dispatch(.setBeginSleepTime(beginSleepTime: $0)) }
+        )
+    }
+
+    private var endSleepTime: Binding<Date> {
+        Binding(
+            get: { store.state.endSleepTime },
+            set: { store.dispatch(.setEndSleepTime(endSleepTime: $0)) }
+        )
+    }
+
     private var normalGlucoseNotification: Binding<Bool> {
         Binding(
             get: { store.state.normalGlucoseNotification },
             set: { store.dispatch(.setNormalGlucoseNotification(enabled: $0)) }
+        )
+    }
+
+    private var enableSleepMode: Binding<Bool> {
+        Binding(
+            get: { store.state.enableSleepMode },
+            set: { store.dispatch(.setEnableSleepMode(enabled: $0)) }
         )
     }
 
@@ -70,6 +120,13 @@ struct GlucoseSettingsView: View {
         Binding(
             get: { store.state.readGlucose },
             set: { store.dispatch(.setReadGlucose(enabled: $0)) }
+        )
+    }
+
+    private var notifyAlarms: Binding<Bool> {
+        Binding(
+            get: { store.state.notifyAlarms },
+            set: { store.dispatch(.setNotifyAlarms(enabled: $0)) }
         )
     }
 

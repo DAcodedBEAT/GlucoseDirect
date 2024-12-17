@@ -12,7 +12,7 @@ enum DirectConfig {
     static let bubbleID = "bubble"
     static let calibrationsViewTag = 3
     static let crowdinURL = "https://crwd.in/glucose-direct-app"
-    static let donateURL = "https://www.paypal.me/reimarmetzen"
+    static let donateURL = "https://www.paypal.me/creepymonstr"
     static let expiredNotificationInterval: Double = 1 * 60 * 60 // in seconds
     static let facebookURL = "https://www.facebook.com/groups/4747621411996068/"
     static let faqURL = "https://github.com/creepymonster/GlucoseDirect/blob/main/FAQ.md#faq"
@@ -48,6 +48,10 @@ enum DirectConfig {
 
     static var appBuild: String = {
         Bundle.main.infoDictionary?["CFBundleVersion"] as! String
+    }()
+    
+    static var appBundle: String = {
+        Bundle.main.infoDictionary?["CFBundleIdentifier"] as! String
     }()
 
     static var appAuthor: String? = {

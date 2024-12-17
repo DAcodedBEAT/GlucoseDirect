@@ -44,9 +44,11 @@ struct AppState: DirectState {
 
         self.alarmHigh = UserDefaults.standard.alarmHigh
         self.alarmLow = UserDefaults.standard.alarmLow
+        self.alarmHighSleep = UserDefaults.standard.alarmHighSleep
+        self.alarmLowSleep = UserDefaults.standard.alarmLowSleep
         self.alarmVolume = UserDefaults.standard.alarmVolume
         self.appleCalendarExport = UserDefaults.standard.appleCalendarExport
-        self.appleHealthExport = UserDefaults.standard.appleHealthExport
+        self.appleHealthSync = UserDefaults.standard.appleHealthSync
         self.bellmanAlarm = UserDefaults.standard.bellmanAlarm
         self.chartShowLines = UserDefaults.standard.chartShowLines
         self.chartZoomLevel = UserDefaults.standard.chartZoomLevel
@@ -55,8 +57,10 @@ struct AppState: DirectState {
         self.customCalibration = UserDefaults.standard.customCalibration
         self.expiringAlarmSound = UserDefaults.standard.expiringAlarmSound
         self.normalGlucoseNotification = UserDefaults.standard.normalGlucoseNotification
+        self.enableSleepMode = UserDefaults.standard.enableSleepMode
         self.alarmGlucoseNotification = UserDefaults.standard.alarmGlucoseNotification
         self.glucoseLiveActivity = UserDefaults.standard.glucoseLiveActivity
+        self.notifyAlarms = UserDefaults.standard.notifyAlarms
         self.ignoreMute = UserDefaults.standard.ignoreMute
         self.glucoseUnit = UserDefaults.shared.glucoseUnit ?? .mgdL
         self.highGlucoseAlarmSound = UserDefaults.standard.highGlucoseAlarmSound
@@ -99,6 +103,8 @@ struct AppState: DirectState {
     var selectedConfiguration: [SensorConnectionConfigurationOption] = []
     var minSelectedDate: Date = .init()
     var selectedDate: Date?
+    var beginSleepTime: Date = .init()
+    var endSleepTime: Date = .init()
     var sensorErrorValues: [SensorError] = []
     var sensorGlucoseHistory: [SensorGlucose] = []
     var sensorGlucoseValues: [SensorGlucose] = []
@@ -113,9 +119,11 @@ struct AppState: DirectState {
 
     var alarmHigh: Int { didSet { UserDefaults.standard.alarmHigh = alarmHigh } }
     var alarmLow: Int { didSet { UserDefaults.standard.alarmLow = alarmLow } }
+    var alarmHighSleep: Int { didSet { UserDefaults.standard.alarmHighSleep = alarmHighSleep } }
+    var alarmLowSleep: Int { didSet { UserDefaults.standard.alarmLowSleep = alarmLowSleep } }
     var alarmVolume: Float { didSet { UserDefaults.standard.alarmVolume = alarmVolume } }
     var appleCalendarExport: Bool { didSet { UserDefaults.standard.appleCalendarExport = appleCalendarExport } }
-    var appleHealthExport: Bool { didSet { UserDefaults.standard.appleHealthExport = appleHealthExport } }
+    var appleHealthSync: Bool { didSet { UserDefaults.standard.appleHealthSync = appleHealthSync } }
     var bellmanAlarm: Bool { didSet { UserDefaults.standard.bellmanAlarm = bellmanAlarm } }
     var chartShowLines: Bool { didSet { UserDefaults.standard.chartShowLines = chartShowLines } }
     var chartZoomLevel: Int { didSet { UserDefaults.standard.chartZoomLevel = chartZoomLevel } }
@@ -124,8 +132,10 @@ struct AppState: DirectState {
     var customCalibration: [CustomCalibration] { didSet { UserDefaults.standard.customCalibration = customCalibration } }
     var expiringAlarmSound: NotificationSound { didSet { UserDefaults.standard.expiringAlarmSound = expiringAlarmSound } }
     var normalGlucoseNotification: Bool { didSet { UserDefaults.standard.normalGlucoseNotification = normalGlucoseNotification } }
+    var enableSleepMode: Bool { didSet { UserDefaults.standard.enableSleepMode = enableSleepMode } }
     var alarmGlucoseNotification: Bool { didSet { UserDefaults.standard.alarmGlucoseNotification = alarmGlucoseNotification } }
     var glucoseLiveActivity: Bool { didSet { UserDefaults.standard.glucoseLiveActivity = glucoseLiveActivity } }
+    var notifyAlarms: Bool { didSet { UserDefaults.standard.notifyAlarms = notifyAlarms } }
     var glucoseUnit: GlucoseUnit { didSet { UserDefaults.shared.glucoseUnit = glucoseUnit } }
     var highGlucoseAlarmSound: NotificationSound { didSet { UserDefaults.standard.highGlucoseAlarmSound = highGlucoseAlarmSound } }
     var ignoreMute: Bool { didSet { UserDefaults.standard.ignoreMute = ignoreMute } }

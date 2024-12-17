@@ -8,7 +8,7 @@
 "NFCReaderUsageDescription" = "De NFC-functie is nodig om alle verbindingsinstellingen uit te lezen voordat een Bluetooth-verbinding tot stand komt.";
 
 /* Privacy - Bluetooth Always Usage Description */
-"NSBluetoothAlwaysUsageDescription" = "De Bluetooth-functie is nodig om verbinding te maken met de ondersteunde apparaten.";
+"NSBluetoothAlwaysUsageDescription" = "De Bluetooth-functie is essentieel om verbinding te maken met de apparaten die worden ondersteund.";
 
 /* Privacy - Bluetooth Peripheral Usage Description */
 "NSBluetoothPeripheralUsageDescription" = "De Bluetooth-functie is nodig om verbinding te maken met de ondersteunde apparaten.";
@@ -21,3 +21,6 @@
 
 /* Privacy - Health Update Usage Description */
 "NSHealthUpdateUsageDescription" = "Toegang tot Apple Health is vereist als glucosegegevens moeten worden geëxporteerd.";
+
+/* Privacy - Calendars Full Access Usage Description */
+"NSCalendarsFullAccessUsageDescription" = "Toegang tot de agenda is vereist om actuele glucosewaarden op de Apple Watch weer te geven.";

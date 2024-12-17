@@ -30,6 +30,8 @@ enum DirectAction {
     case exportToUnknown
     case exportToGlooko
     case exportToTidepool
+    case importDatabase(url: URL)
+    case importFile(srcUrl: URL, dstUrl: URL)
     case loadBloodGlucoseValues
     case loadInsulinDeliveryValues
     case loadSensorErrorValues
@@ -52,10 +54,12 @@ enum DirectAction {
     case setIgnoreMute(enabled: Bool)
     case setAlarmHigh(upperLimit: Int)
     case setAlarmLow(lowerLimit: Int)
+    case setAlarmHighSleep(upperLimit: Int)
+    case setAlarmLowSleep(lowerLimit: Int)
     case setAlarmVolume(volume: Float)
     case setAlarmSnoozeUntil(untilDate: Date?, autosnooze: Bool = false)
     case setAppleCalendarExport(enabled: Bool)
-    case setAppleHealthExport(enabled: Bool)
+    case setAppleHealthSync(enabled: Bool)
     case setAppState(appState: ScenePhase)
     case setBellmanConnectionState(connectionState: BellmanConnectionState)
     case setBellmanNotification(enabled: Bool)
@@ -73,7 +77,11 @@ enum DirectAction {
     case setExpiringAlarmSound(sound: NotificationSound)
     case setNormalGlucoseNotification(enabled: Bool)
     case setAlarmGlucoseNotification(enabled: Bool)
+    case setEnableSleepMode(enabled: Bool)
+    case setBeginSleepTime(beginSleepTime: Date)
+    case setEndSleepTime(endSleepTime: Date)
     case setGlucoseLiveActivity(enabled: Bool)
+    case setNotifyAlarms(enabled: Bool)
     case setGlucoseUnit(unit: GlucoseUnit)
     case setHighGlucoseAlarmSound(sound: NotificationSound)
     case setLowGlucoseAlarmSound(sound: NotificationSound)

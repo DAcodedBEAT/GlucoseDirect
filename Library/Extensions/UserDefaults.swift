@@ -8,39 +8,43 @@ import Foundation
 // MARK: - Keys
 
 private enum Keys: String {
-    case appSerial = "libre-direct.settings.app-serial"
-    case alarmHigh = "libre-direct.settings.alarm-high"
-    case alarmLow = "libre-direct.settings.alarm-low"
-    case alarmVolume = "libre-direct.settings.alarm-volume"
-    case appleHealthExport = "libre-direct.settings.apple-health-export"
-    case bellmanAlarm = "libre-direct.settings.bellman-alarm"
-    case calendarExport = "libre-direct.settings.calendar-export"
-    case chartShowLines = "libre-direct.settings.chart-show-lines"
-    case chartZoomLevel = "libre-direct.settings.chart-zoom-level"
-    case connectionAlarmSound = "libre-direct.settings.connection-alarm-sound"
-    case connectionPeripheralUUID = "libre-direct.sensor-ble-connection.peripheral-uuid"
-    case customCalibration = "libre-direct.settings.custom-calibration"
-    case expiringAlarmSound = "libre-direct.settings.expiring-alarm-sound"
-    case normalGlucoseNotification = "libre-direct.settings.normal-glucose-notification"
-    case alarmGlucoseNotification = "libre-direct.settings.alarm-glucose-notification"
-    case glucoseLiveActivity = "libre-direct.settings.glucose-live-activity"
-    case glucoseUnit = "libre-direct.settings.glucose-unit"
-    case highGlucoseAlarmSound = "libre-direct.settings.high-glucose-alarm-sound"
-    case ignoreMute = "libre-direct.settings.ignore-mute"
-    case isConnectionPaired = "libre-direct.settings.is-paired"
-    case latestBloodGlucose = "libre-direct.settings.latest-blood-glucose"
-    case latestSensorError = "libre-direct.settings.latest-sensor-error"
-    case latestSensorGlucose = "libre-direct.settings.latest-sensor-glucose"
-    case latestInsulinDelivery = "libre-direct.settings.latest-insulin-delivery"
-    case lowGlucoseAlarmSound = "libre-direct.settings.low-glucose-alarm-sound"
-    case nightscoutApiSecret = "libre-direct.settings.nightscout-api-secret"
-    case nightscoutUpload = "libre-direct.settings.nightscout-upload-enabled"
-    case nightscoutURL = "libre-direct.settings.nightscout-host"
-    case readGlucose = "libre-direct.settings.read-glucose"
-    case selectedCalendarTarget = "libre-direct.settings.selected-calendar-target"
-    case selectedConnectionID = "libre-direct.settings.selected-connection-id"
-    case sensor = "libre-direct.settings.sensor"
-    case sensorInterval = "libre-direct.settings.sensor-interval"
+    case appSerial = "glucose-direct.settings.app-serial"
+    case alarmHigh = "glucose-direct.settings.alarm-high"
+    case alarmLow = "glucose-direct.settings.alarm-low"
+    case alarmHighSleep = "glucose-direct.settings.alarm-high-sleep"
+    case alarmLowSleep = "glucose-direct.settings.alarm-low-sleep"
+    case alarmVolume = "glucose-direct.settings.alarm-volume"
+    case appleHealthSync = "glucose-direct.settings.apple-health-export"
+    case bellmanAlarm = "glucose-direct.settings.bellman-alarm"
+    case calendarExport = "glucose-direct.settings.calendar-export"
+    case chartShowLines = "glucose-direct.settings.chart-show-lines"
+    case chartZoomLevel = "glucose-direct.settings.chart-zoom-level"
+    case connectionAlarmSound = "glucose-direct.settings.connection-alarm-sound"
+    case connectionPeripheralUUID = "glucose-direct.sensor-ble-connection.peripheral-uuid"
+    case customCalibration = "glucose-direct.settings.custom-calibration"
+    case expiringAlarmSound = "glucose-direct.settings.expiring-alarm-sound"
+    case normalGlucoseNotification = "glucose-direct.settings.normal-glucose-notification"
+    case enableSleepMode = "glucose-direct.settings.enable-sleep-mode"
+    case alarmGlucoseNotification = "glucose-direct.settings.alarm-glucose-notification"
+    case glucoseLiveActivity = "glucose-direct.settings.glucose-live-activity"
+    case notifyAlarms = "glucose-direct.settings.glucose-notify-alarms"
+    case glucoseUnit = "glucose-direct.settings.glucose-unit"
+    case highGlucoseAlarmSound = "glucose-direct.settings.high-glucose-alarm-sound"
+    case ignoreMute = "glucose-direct.settings.ignore-mute"
+    case isConnectionPaired = "glucose-direct.settings.is-paired"
+    case latestBloodGlucose = "glucose-direct.settings.latest-blood-glucose"
+    case latestSensorError = "glucose-direct.settings.latest-sensor-error"
+    case latestSensorGlucose = "glucose-direct.settings.latest-sensor-glucose"
+    case latestInsulinDelivery = "glucose-direct.settings.latest-insulin-delivery"
+    case lowGlucoseAlarmSound = "glucose-direct.settings.low-glucose-alarm-sound"
+    case nightscoutApiSecret = "glucose-direct.settings.nightscout-api-secret"
+    case nightscoutUpload = "glucose-direct.settings.nightscout-upload-enabled"
+    case nightscoutURL = "glucose-direct.settings.nightscout-host"
+    case readGlucose = "glucose-direct.settings.read-glucose"
+    case selectedCalendarTarget = "glucose-direct.settings.selected-calendar-target"
+    case selectedConnectionID = "glucose-direct.settings.selected-connection-id"
+    case sensor = "glucose-direct.settings.sensor"
+    case sensorInterval = "glucose-direct.settings.sensor-interval"
     case sharedApp = "glucosedirect--app"
     case sharedAppVersion = "glucosedirect--app-version"
     case sharedGlucose = "latestReadings"
@@ -51,10 +55,10 @@ private enum Keys: String {
     case sharedTransmitterBattery = "glucosedirect--transmitter-battery"
     case sharedTransmitterFirmware = "glucosedirect--transmitter-firmware"
     case sharedTransmitterHardware = "glucosedirect--transmitter-hardware"
-    case transmitter = "libre-direct.settings.transmitter"
-    case showAnnotations = "libre-direct.settings.show-annotations"
-    case showSmoothedGlucose = "libre-direct.settings.smooth-chart-values"
-    case showInsulinInput = "libre-direct.settings.show-insulin-delivery-input"
+    case transmitter = "glucose-direct.settings.transmitter"
+    case showAnnotations = "glucose-directsettings.show-annotations"
+    case showSmoothedGlucose = "glucose-direct.settings.smooth-chart-values"
+    case showInsulinInput = "glucose-direct.settings.show-insulin-delivery-input"
 }
 
 extension UserDefaults {
@@ -96,6 +100,32 @@ extension UserDefaults {
         }
     }
 
+    var alarmHighSleep: Int {
+        get {
+            if object(forKey: Keys.alarmHighSleep.rawValue) != nil {
+                return integer(forKey: Keys.alarmHighSleep.rawValue)
+            }
+
+            return 180
+        }
+        set {
+            set(newValue, forKey: Keys.alarmHighSleep.rawValue)
+        }
+    }
+
+    var alarmLowSleep: Int {
+        get {
+            if object(forKey: Keys.alarmLowSleep.rawValue) != nil {
+                return integer(forKey: Keys.alarmLowSleep.rawValue)
+            }
+
+            return 80
+        }
+        set {
+            set(newValue, forKey: Keys.alarmLowSleep.rawValue)
+        }
+    }
+
     var alarmVolume: Float {
         get {
             if object(forKey: Keys.alarmVolume.rawValue) != nil {
@@ -109,16 +139,16 @@ extension UserDefaults {
         }
     }
 
-    var appleHealthExport: Bool {
+    var appleHealthSync: Bool {
         get {
-            if object(forKey: Keys.appleHealthExport.rawValue) != nil {
-                return bool(forKey: Keys.appleHealthExport.rawValue)
+            if object(forKey: Keys.appleHealthSync.rawValue) != nil {
+                return bool(forKey: Keys.appleHealthSync.rawValue)
             }
 
             return false
         }
         set {
-            set(newValue, forKey: Keys.appleHealthExport.rawValue)
+            set(newValue, forKey: Keys.appleHealthSync.rawValue)
         }
     }
 
@@ -274,6 +304,19 @@ extension UserDefaults {
         }
     }
 
+    var enableSleepMode: Bool {
+        get {
+            if object(forKey: Keys.enableSleepMode.rawValue) != nil {
+                return bool(forKey: Keys.enableSleepMode.rawValue)
+            }
+
+            return true
+        }
+        set {
+            set(newValue, forKey: Keys.enableSleepMode.rawValue)
+        }
+    }
+
     var alarmGlucoseNotification: Bool {
         get {
             if object(forKey: Keys.alarmGlucoseNotification.rawValue) != nil {
@@ -287,7 +330,7 @@ extension UserDefaults {
         }
     }
 
-    var glucoseLiveActivity: Bool {
+   var glucoseLiveActivity: Bool {
         get {
             if object(forKey: Keys.glucoseLiveActivity.rawValue) != nil {
                 return bool(forKey: Keys.glucoseLiveActivity.rawValue)
@@ -299,6 +342,19 @@ extension UserDefaults {
             set(newValue, forKey: Keys.glucoseLiveActivity.rawValue)
         }
     }
+
+    var notifyAlarms: Bool {
+         get {
+             if object(forKey: Keys.notifyAlarms.rawValue) != nil {
+                 return bool(forKey: Keys.notifyAlarms.rawValue)
+             }
+
+             return false
+         }
+         set {
+             set(newValue, forKey: Keys.notifyAlarms.rawValue)
+         }
+     }
 
     var glucoseUnit: GlucoseUnit? {
         get {
