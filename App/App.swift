@@ -13,7 +13,7 @@ import SwiftUI
 // MARK: - GlucoseDirectApp
 
 @main
-final class GlucoseDirectApp: App {
+struct GlucoseDirectApp: App {
     // MARK: Lifecycle
 
     init() {
@@ -21,7 +21,7 @@ final class GlucoseDirectApp: App {
             DirectLog.info("Application directory: \(NSHomeDirectory())")
         #endif
 
-        GlucoseDirectApp.store.dispatch(.startup)
+        store.dispatch(.startup)
     }
 
     // MARK: Internal
@@ -36,16 +36,13 @@ final class GlucoseDirectApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(GlucoseDirectApp.store)
+                .environmentObject(self.store)
         }
     }
 
     // MARK: Private
 
-    
-    public static var store: DirectStore = {
-            return createStore()
-        }()
+    private let store: DirectStore = createStore()
 }
 
 // MARK: - GlucoseDirectAppDelegate
