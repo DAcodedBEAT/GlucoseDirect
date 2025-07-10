@@ -13,7 +13,7 @@ protocol Glucose: Equatable {
     var glucoseValue: Int { get }
     var appleHealthId: UUID? { get set }
 
-    static func == (lhs: any Glucose, rhs: any Glucose) -> Bool
+    static func == (lhs: Self, rhs: Self) -> Bool
 }
 
 extension Glucose {
@@ -23,7 +23,7 @@ extension Glucose {
         return minutes % ofMinutes == 0
     }
 
-    static func == (lhs: any Glucose, rhs: any Glucose) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
     
